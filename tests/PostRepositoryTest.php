@@ -31,7 +31,6 @@ class PostRepositoryTest extends TestCase
     {
         parent::tearDown();
         $commands = file_get_contents('database/test_schema.sql');
-        // @todo Read the username and host from the .env file
         $dsn = "mysql:host=localhost;";
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -48,7 +47,7 @@ class PostRepositoryTest extends TestCase
 
     public function testPostCreation()
     {
-        $post = (new PostRepository())->savePost('test', 'body');
+        $post = $this->postRepository->savePost('test', 'body');
         $this->assertEquals('test', $post->title);
         $this->assertEquals('body', $post->body);
     }
@@ -56,29 +55,29 @@ class PostRepositoryTest extends TestCase
     public function testPostRetrieval()
     {
         // Create a post, then retrieve it
-        $post = (new PostRepository())->savePost('test', 'body');
+        $post = $this->postRepository->savePost('test', 'body');
 
         $post = $this->postRepository->getPostById(1);
         $this->assertEquals('test', $post->title);
         $this->assertEquals('body', $post->body);
 
 
-        $post = (new PostRepository())->savePost('another test', 'another body');
+        $post = $this->postRepository->savePost('another test', 'another body');
         $post = $this->postRepository->getPostById(2);
         $this->assertEquals('another test', $post->title);
         $this->assertEquals('another body', $post->body);
 
-        $post = (new PostRepository())->savePost('', 'empty title, body only');
+        $post = $this->postRepository->savePost('', 'empty title, body only');
         $post = $this->postRepository->getPostById(3);
         $this->assertEquals('', $post->title);
         $this->assertEquals('empty title, body only', $post->body);
 
-        $post = (new PostRepository())->savePost('empty body, title only', '');
+        $post = $this->postRepository->savePost('empty body, title only', '');
         $post = $this->postRepository->getPostById(4);
         $this->assertEquals('empty body, title only', $post->title);
         $this->assertEquals('', $post->body);
 
-        $post = (new PostRepository())->savePost('', '');
+        $post = $this->postRepository->savePost('', '');
         $post = $this->postRepository->getPostById(5);
         $this->assertEquals('', $post->title);
         $this->assertEquals('', $post->body);
@@ -87,9 +86,9 @@ class PostRepositoryTest extends TestCase
     public function testPostUpdate()
     {
         // Create a post, then update it
-        $post1 = (new PostRepository())->savePost('test', 'body');
-        $post2 = (new PostRepository())->savePost('test2', 'test2 body');
-        $post3 = (new PostRepository())->savePost('', '');
+        $this->postRepository->savePost('test', 'body');
+        $this->postRepository->savePost('test2', 'test2 body');
+        $this->postRepository->savePost('', '');
 
         sleep(1); // Sleep for 1 second to ensure updated_at timestamp is different
         // Update the post with ID 1
@@ -125,7 +124,7 @@ class PostRepositoryTest extends TestCase
     public function testPostDeletion()
     {
         //  Create a post
-        $post = (new PostRepository())->savePost('test', 'body');
+        $post = $this->postRepository->savePost('test', 'body');
         $this->assertEquals(1, $post->id);
 
         // Delete the post, then try to retrieve it
@@ -133,9 +132,9 @@ class PostRepositoryTest extends TestCase
         $post = $this->postRepository->getPostById(1);
         $this->assertFalse($post);
 
-        $post = (new PostRepository())->savePost('test2', 'body2');
+        $post = $this->postRepository->savePost('test2', 'body2');
         $this->assertEquals(2, $post->id);
-        $post = (new PostRepository())->savePost('test3', 'body3');
+        $post = $this->postRepository->savePost('test3', 'body3');
         $this->assertEquals(3, $post->id);
 
         $this->postRepository->deletePostById(2);
