@@ -27,12 +27,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Configure Application
         run: |
-          mysql -h 127.0.0.1 --port 3306 -uroot < ./database/schema.sql
+          mysql -h 127.0.0.1 --port 3306 -uroot < ./database/test_schema.sql
           cp .env.ci .env
           composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --optimize-autoloader
 
       - name: Print PHP Info
         run: php -v
-        
+
       - name: Run Unit Tests
         run: php vendor/bin/phpunit
