@@ -55,16 +55,94 @@ class PostRepositoryTest extends TestCase
 
     public function testPostRetrieval()
     {
-        // @todo test fetching articles from the PostRepository.
+        // Create a post, then retrieve it
+        new PostRepository()->savePost('test', 'body');
+
+        $post = $this->postRepository->getPostById(1);
+        $this->assertEquals('test', $post->title);
+        $this->assertEquals('body', $post->body);
+
+
+        new PostRepository()->savePost('another test', 'another body');
+        $post = $this->postRepository->getPostById(2);
+        $this->assertEquals('another test', $post->title);
+        $this->assertEquals('another body', $post->body);
+
+        new PostRepository()->savePost('', 'empty title, body only');
+        $post = $this->postRepository->getPostById(3);
+        $this->assertEquals('', $post->title);
+        $this->assertEquals('empty title, body only', $post->body);
+
+        new PostRepository()->savePost('empty body, title only', '');
+        $post = $this->postRepository->getPostById(4);
+        $this->assertEquals('empty body, title only', $post->title);
+        $this->assertEquals('', $post->body);
+
+        new PostRepository()->savePost('', '');
+        $post = $this->postRepository->getPostById(5);
+        $this->assertEquals('', $post->title);
+        $this->assertEquals('', $post->body);
     }
 
     public function testPostUpdate()
     {
-        // @todo create a post, update the title and body, and check that you get the expected title and body
+        // Create a post, then update it
+        new PostRepository()->savePost('test', 'body');
+        new PostRepository()->savePost('test2', 'test2 body');
+        new PostRepository()->savePost('', '');
+
+        sleep(1); // Sleep for 1 second to ensure updated_at timestamp is different
+        // Update the post with ID 1
+        $post = $this->postRepository->updatePost(1, 'altered title', 'altered body');
+        $post = $this->postRepository->getPostById(1);
+
+        // Test if updated values are correct
+        $this->assertEquals('altered title', $post->title);
+        $this->assertEquals('altered body', $post->body);
+
+        // Test if updated_at timestamp is different from created_at timestamp
+        $this->assertNotEquals($post->created_at, $post->updated_at);
+
+
+        $post = $this->postRepository->updatePost(2, 'test2 updated', 'test2 body updated');
+        $post = $this->postRepository->getPostById(2);
+
+        // Test if updated values are correct
+        $this->assertEquals('test2 updated', $post->title);
+        $this->assertEquals('test2 body updated', $post->body);
+
+        // Test if updated_at timestamp is different from created_at timestamp
+        $this->assertNotEquals($post->created_at, $post->updated_at);
+
+        $post = $this->postRepository->updatePost(3, 'none empty', 'none empty');
+        $post = $this->postRepository->getPostById(3);
+
+        // Test if updated values are correct
+        $this->assertEquals('none empty', $post->title);
+        $this->assertEquals('none empty', $post->body);
     }
 
     public function testPostDeletion()
     {
-        // @todo delete a post by ID and check that it isn't in the database anymore
+        //  Create a post
+        $post = (new PostRepository())->savePost('test', 'body');
+        $this->assertEquals(1, $post->id);
+
+        // Delete the post, then try to retrieve it
+        $this->postRepository->deletePostById(1);
+        $post = $this->postRepository->getPostById(1);
+        $this->assertFalse($post);
+
+        $post = (new PostRepository())->savePost('test2', 'body2');
+        $this->assertEquals(1, $post->id);
+        $post = (new PostRepository())->savePost('test3', 'body3');
+        $this->assertEquals(2, $post->id);
+
+        $this->postRepository->deletePostById(1);
+        $this->postRepository->deletePostById(2);
+        $post = $this->postRepository->getPostById(1);
+        $this->assertFalse($post);
+        $post = $this->postRepository->getPostById(2);
+        $this->assertFalse($post);
     }
 }

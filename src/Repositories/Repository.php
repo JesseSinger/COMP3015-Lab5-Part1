@@ -17,12 +17,15 @@ class Repository
 
 	public function __construct()
 	{
+		$dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
+        $dotenv->load();
+
 		// @todo use https://github.com/vlucas/phpdotenv so we don't have any hard coded credentials here
-		$this->env = 'test';
-		$this->hostname = 'localhost';
-		$this->username = 'root';
+		$this->env = $_ENV['APP_ENV'] ?? '';
+		$this->hostname = $_ENV['DB_HOST'] ?? 'localhost';
+		$this->username = $_ENV['DB_USER'] ?? 'root';
 		$this->databaseName = $this->env === 'test' ? 'posts_web_app_test' : 'posts_web_app';
-		$this->databasePassword = '';
+		$this->databasePassword = $_ENV['DB_PASSWORD'] ?? '';
 		$this->charset = 'utf8mb4';
 
 		$dsn = "mysql:host=$this->hostname;dbname=$this->databaseName;charset=$this->charset";
