@@ -31,5 +31,8 @@ jobs:
           cp .env.ci .env
           composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --optimize-autoloader
 
+      - name: Print PHP Info
+        run: php -v
+        
       - name: Run Unit Tests
         run: php vendor/bin/phpunit
