@@ -134,15 +134,15 @@ class PostRepositoryTest extends TestCase
         $this->assertFalse($post);
 
         $post = (new PostRepository())->savePost('test2', 'body2');
-        $this->assertEquals(1, $post->id);
-        $post = (new PostRepository())->savePost('test3', 'body3');
         $this->assertEquals(2, $post->id);
+        $post = (new PostRepository())->savePost('test3', 'body3');
+        $this->assertEquals(3, $post->id);
 
-        $this->postRepository->deletePostById(1);
         $this->postRepository->deletePostById(2);
-        $post = $this->postRepository->getPostById(1);
-        $this->assertFalse($post);
+        $this->postRepository->deletePostById(3);
         $post = $this->postRepository->getPostById(2);
+        $this->assertFalse($post);
+        $post = $this->postRepository->getPostById(3);
         $this->assertFalse($post);
     }
 }
