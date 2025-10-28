@@ -21,11 +21,11 @@ class Repository
         $dotenv->load();
 
 		// @todo use https://github.com/vlucas/phpdotenv so we don't have any hard coded credentials here
-		$this->env = $_ENV['APP_ENV'] ?? '';
-		$this->hostname = $_ENV['DB_HOST'] ?? 'localhost';
-		$this->username = $_ENV['DB_USER'] ?? 'root';
+		$this->env = $_ENV['APP_ENV'];
+		$this->hostname = $_ENV['DB_HOST'];
+		$this->username = $_ENV['DB_USER'];
 		$this->databaseName = $this->env === 'test' ? 'posts_web_app_test' : 'posts_web_app';
-		$this->databasePassword = $_ENV['DB_PASSWORD'] ?? '';
+		$this->databasePassword = $_ENV['DB_PASSWORD'];
 		$this->charset = 'utf8mb4';
 
 		$dsn = "mysql:host=$this->hostname;dbname=$this->databaseName;charset=$this->charset";
