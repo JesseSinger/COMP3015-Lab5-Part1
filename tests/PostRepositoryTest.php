@@ -56,29 +56,29 @@ class PostRepositoryTest extends TestCase
     public function testPostRetrieval()
     {
         // Create a post, then retrieve it
-        new PostRepository()->savePost('test', 'body');
+        $post = (new PostRepository())->savePost('test', 'body');
 
         $post = $this->postRepository->getPostById(1);
         $this->assertEquals('test', $post->title);
         $this->assertEquals('body', $post->body);
 
 
-        new PostRepository()->savePost('another test', 'another body');
+        $post = (new PostRepository())->savePost('another test', 'another body');
         $post = $this->postRepository->getPostById(2);
         $this->assertEquals('another test', $post->title);
         $this->assertEquals('another body', $post->body);
 
-        new PostRepository()->savePost('', 'empty title, body only');
+        $post = (new PostRepository())->savePost('', 'empty title, body only');
         $post = $this->postRepository->getPostById(3);
         $this->assertEquals('', $post->title);
         $this->assertEquals('empty title, body only', $post->body);
 
-        new PostRepository()->savePost('empty body, title only', '');
+        $post = (new PostRepository())->savePost('empty body, title only', '');
         $post = $this->postRepository->getPostById(4);
         $this->assertEquals('empty body, title only', $post->title);
         $this->assertEquals('', $post->body);
 
-        new PostRepository()->savePost('', '');
+        $post = (new PostRepository())->savePost('', '');
         $post = $this->postRepository->getPostById(5);
         $this->assertEquals('', $post->title);
         $this->assertEquals('', $post->body);
@@ -87,9 +87,9 @@ class PostRepositoryTest extends TestCase
     public function testPostUpdate()
     {
         // Create a post, then update it
-        new PostRepository()->savePost('test', 'body');
-        new PostRepository()->savePost('test2', 'test2 body');
-        new PostRepository()->savePost('', '');
+        $post1 = (new PostRepository())->savePost('test', 'body');
+        $post2 = (new PostRepository())->savePost('test2', 'test2 body');
+        $post3 = (new PostRepository())->savePost('', '');
 
         sleep(1); // Sleep for 1 second to ensure updated_at timestamp is different
         // Update the post with ID 1
