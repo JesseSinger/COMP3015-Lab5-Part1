@@ -30,15 +30,24 @@ class PostRepositoryTest extends TestCase
     protected function tearDown(): void
     {
         parent::tearDown();
+
+        $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+        $dotenv->load();
+
+        $hostname = $_ENV['DB_HOST'];
+        $username = $_ENV['DB_USER'];
+        $databasePassword = $_ENV['DB_PASSWORD'];
+		$databaseName = 'posts_web_app_test'; // always use test database for tests?
+
         $commands = file_get_contents('database/test_schema.sql');
-        $dsn = "mysql:host=localhost;";
+        $dsn = "mysql:host=$hostname;dbname=$databaseName;";
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
         ];
         try {
-            $pdo = new PDO($dsn, 'root', '', $options);
+            $pdo = new PDO($dsn, $username, $databasePassword, $options);
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage(), (int)$e->getCode());
         }
